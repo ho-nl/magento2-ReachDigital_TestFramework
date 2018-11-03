@@ -1,0 +1,15 @@
+{
+    "name": "reach-digital/magento2-test-framework",
+    "type": "magento2-component",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Paul Hachmang",
+            "email": "paul@reachdigital.nl"
+        }
+    ],
+    "require": {
+        "php": "~7.1.3||~7.2.0",
+        "magento/framework": "~100.1.0||~101.0.0||~102.0.0"
+    }
+}
