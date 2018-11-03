@@ -3,19 +3,8 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-use Magento\Framework\Autoload\AutoloaderRegistry;
 
-function rdTimerStart($name, $asFloat = false) : callable {
-    $startTime = microtime(true);
-    return function() use ($startTime, $name, $asFloat) {
-        $duration = round((microtime(true) - $startTime) * 1000);
-        if ($asFloat) {
-            return $duration;
-        } elseif ($duration) {
-            echo "{$name}: {$duration}ms\n";
-        }
-    };
-}
+use Magento\Framework\Autoload\AutoloaderRegistry;
 
 $integrationTestDir = __DIR__.'/../../integration';
 $fixtureBaseDir = $integrationTestDir.'/testsuite';
@@ -58,7 +47,7 @@ try {
 
     $sandboxUniqueId = md5(sha1_file($installConfigFile));
     $installDir = TESTS_TEMP_DIR . "/sandbox-{$settings->get('TESTS_PARALLEL_THREAD', 0)}-{$sandboxUniqueId}";
-    $warmBoot = \is_dir($installDir);
+    $coldBoot = !\is_dir($installDir);
 
     $application = new \ReachDigital\TestFramework\Application(
         $shell,
@@ -94,11 +83,21 @@ try {
     $stop = rdTimerStart('$application->initialize', true);
     $application->initialize([]);
     $initTime = $stop();
-    if ($warmBoot && $initTime > 2000) {
-        echo "Bootup time is long ({$initTime}ms), if this persists, clean all caches and retry\n";
-    }
 
     \Magento\TestFramework\Helper\Bootstrap::setInstance(new \Magento\TestFramework\Helper\Bootstrap($bootstrap));
+
+    if ($initTime > 2000 && !$coldBoot) {
+        $shell->execute('rm -r %s', [$installDir]);
+        die("Invalid cache detected (booting took {$initTime}ms), flushed all caches, please restart, exiting now..");
+    }
+
+    if (!$coldBoot) {
+        // Make sure all caches are enabled
+        /** @var \Magento\Framework\App\Cache\Manager $cacheManager */
+        $cacheManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
+            ->get(\Magento\Framework\App\Cache\Manager::class);
+        $cacheManager->setEnabled($cacheManager->getAvailableTypes(), true);
+    }
 
     $dirSearch = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()
         ->create(\Magento\Framework\Component\DirSearch::class);
@@ -118,6 +117,20 @@ try {
 } catch (\Exception $e) {
     echo $e . PHP_EOL;
     exit(1);
+}
+
+function rdTimerStart($name, $asFloat = false) : callable {
+    $startTime = microtime(true);
+    return function() use ($startTime, $name, $asFloat) {
+        $duration = round((microtime(true) - $startTime) * 1000);
+        if ($asFloat) {
+            return $duration;
+        }
+        if ($duration) {
+            echo "{$name}: {$duration}ms\n";
+        }
+        return $duration;
+    };
 }
 
 /**
