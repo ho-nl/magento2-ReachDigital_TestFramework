@@ -5,11 +5,13 @@
  */
 use Magento\Framework\Autoload\AutoloaderRegistry;
 
-function start($name) : callable {
+function rdTimerStart($name, $asFloat = false) : callable {
     $startTime = microtime(true);
-    return function() use ($startTime, $name) {
-        $duration = round((microtime(true) - $startTime) * 1000, 1);
-        if ($duration) {
+    return function() use ($startTime, $name, $asFloat) {
+        $duration = round((microtime(true) - $startTime) * 1000);
+        if ($asFloat) {
+            return $duration;
+        } elseif ($duration) {
             echo "{$name}: {$duration}ms\n";
         }
     };
@@ -52,19 +54,13 @@ try {
     }
 
     $installConfigFile = $settings->getAsConfigFile('TESTS_INSTALL_CONFIG_FILE');
-    if (!file_exists($installConfigFile)) {
-        $installConfigFile .= '.dist';
-    }
-    
     $globalConfigFile = $settings->getAsConfigFile('TESTS_GLOBAL_CONFIG_FILE');
-    if (!file_exists($globalConfigFile)) {
-        $globalConfigFile .= '.dist';
-    }
 
     $sandboxUniqueId = md5(sha1_file($installConfigFile));
     $installDir = TESTS_TEMP_DIR . "/sandbox-{$settings->get('TESTS_PARALLEL_THREAD', 0)}-{$sandboxUniqueId}";
+    $warmBoot = \is_dir($installDir);
 
-    $application = new \Magento\TestFramework\Application(
+    $application = new \ReachDigital\TestFramework\Application(
         $shell,
         $installDir,
         $installConfigFile,
@@ -95,9 +91,12 @@ try {
         $application->install($settings->getAsBoolean('TESTS_CLEANUP'));
     }
 
-    $stop = start('$application->initialize');
+    $stop = rdTimerStart('$application->initialize', true);
     $application->initialize([]);
-    $stop();
+    $initTime = $stop();
+    if ($warmBoot && $initTime > 2000) {
+        echo "Bootup time is long ({$initTime}ms), if this persists, clean all caches and retry\n";
+    }
 
     \Magento\TestFramework\Helper\Bootstrap::setInstance(new \Magento\TestFramework\Helper\Bootstrap($bootstrap));
 
