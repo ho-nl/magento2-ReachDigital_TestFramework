@@ -1,7 +1,7 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
+ * Copyright © Reach Digital (https://www.reachdigital.io/)
+ * See LICENSE.txt for license details.
  */
 require_once __DIR__ . '/../../integration/framework/autoload.php';
 require_once __DIR__ . '/../../../../app/autoload.php';

@@ -1,10 +1,8 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
+ * Copyright © Reach Digital (https://www.reachdigital.io/)
+ * See LICENSE.txt for license details.
  */
-
-//@TODO Add back support (why isn't this in the specific integration test, managing global state is bad?)
 
 return [
 //    'customer/password/limit_password_reset_requests_method' => 0,

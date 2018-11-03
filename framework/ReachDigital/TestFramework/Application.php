@@ -3,6 +3,7 @@
  * Copyright © Reach Digital (https://www.reachdigital.io/)
  * See LICENSE.txt for license details.
  */
+
 namespace ReachDigital\TestFramework;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
