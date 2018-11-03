@@ -7,6 +7,12 @@ namespace ReachDigital\TestFramework\Annotation;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Rewrite of \Magento\TestFramework\Annotation\AppIsolation because that class will always reinitialize on each test
+ * while it should only reinitialize when the test asks for it by providing '@magentoAppIsolation enabled'
+ *
+ * @see \Magento\TestFramework\Annotation\AppIsolation
+ */
 class AppIsolation
 {
     /** @var \Magento\TestFramework\Application */

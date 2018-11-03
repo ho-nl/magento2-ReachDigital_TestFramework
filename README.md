@@ -31,7 +31,7 @@ it shoudn't be this way.
 
 Because: **If Magento is able to render a complete html-page under 200ms, shouldn't a test be able to start at least as quickly as well?**
 
-## Strategy
+## Performance improvements
 
 So the idea is that Magento is probably cleaning a lof of cache while booting up, running additional tests, etc. If we
 can prevent the cleaning of cache, state, etc. we can achieve much higher performance and maybe even surpass the
@@ -42,7 +42,9 @@ resiliant and should be able to run with warmed cache and cold cache.._
 
 ### 1. Disable memory cleanup scripts
 
-By disabling the following classes we go from the major speed improvement:
+Speed improvement; ~10-20s
+
+By disabling the following classes we get the biggest speed improvement.
 
 ```php
 <?php
@@ -50,13 +52,33 @@ By disabling the following classes we go from the major speed improvement:
 \Magento\TestFramework\Workaround\Cleanup\StaticProperties::class;
 ```
 
+### 2. Fix overzealous app reinitialisation
 
+Speed improvement; ~50ms
 
-## Troubleshooting
+```php
+<?php
+//Rewrites Magento's AppIsolation class
+\ReachDigital\TestFramework\Annotation\AppIsolation::class;
+```
 
-### Bootup time is long (2000+ ms), if this persists, clean all caches and retry
+### 3. Disable config-global.php by default
 
+Speed improvement; ~280ms
 
-### config-global.php slowdown
+The config-global.php.dist will always set some config values, but this requires reinitialisation of the config. By
+not using this functionality we shave another 300ms off the request.
 
-Make sure the config-global.php 
+### 4. Disabled sequence table generation
+
+Speed improvement; ~400ms
+
+By default Magento creates all sequence tables
+
+## Usability improvements
+
+### 1. Moved the generation folder back to the root
+
+Usually an IDE doesn't like it when duplicate classes exist, because of this reason the
+`dev/test/integration/tmp/sandbox-*` directory should be ignored. By moving the generated folder to the root of the
+project we get the benefit that the IDE can inspect those classes.

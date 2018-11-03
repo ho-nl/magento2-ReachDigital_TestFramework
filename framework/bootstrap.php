@@ -87,7 +87,7 @@ try {
     \Magento\TestFramework\Helper\Bootstrap::setInstance(new \Magento\TestFramework\Helper\Bootstrap($bootstrap));
 
     if ($initTime > 2000 && !$coldBoot) {
-        $shell->execute('rm -r %s', [$installDir]);
+        $shell->execute('rm -r %s', ["{$installDir}/cache"]);
         die("Invalid cache detected (booting took {$initTime}ms), flushed all caches, please restart, exiting now..");
     }
 
