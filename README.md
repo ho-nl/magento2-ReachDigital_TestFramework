@@ -1,4 +1,8 @@
-# ReachDigital Magento 2 TestFramework
+# ReachDigital Magento 2 Performance tuned integration tests
+
+TLDR; Boots up the integration testframework in less than 300ms when caches are primed.
+
+Video: http://cloud.h-o.nl/adf01f498e00
 
 ## Goals
 - Have the startup time of the integration testframework below 300ms.
