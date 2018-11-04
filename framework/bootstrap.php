@@ -47,7 +47,7 @@ try {
 
     $sandboxUniqueId = md5(sha1_file($installConfigFile));
     $installDir = TESTS_TEMP_DIR . "/sandbox-{$settings->get('TESTS_PARALLEL_THREAD', 0)}-{$sandboxUniqueId}";
-    $coldBoot = !\is_dir($installDir);
+    $coldBoot = !\is_dir($installDir.'/cache');
 
     $application = new \ReachDigital\TestFramework\Application(
         $shell,
