@@ -15,9 +15,28 @@
     "extra": {
         "map": [
             [
-                ".",
-                "dev/tests/quick-integration"
+                "etc",
+                "dev/tests/quick-integration/etc"
+            ],
+            [
+                "framework",
+                "dev/tests/quick-integration/framework"
+            ],
+            [
+                "phpunit.xml.dist",
+                "dev/tests/quick-integration/phpunit.xml.dist"
+            ],
+            [
+                "README.md",
+                "dev/tests/quick-integration/README.md"
             ]
+        ],
+        "chmod": [
+            {
+                "mask": "0755",
+                "path": "bin/magento"
+            }
         ]
-    }
+    },
+    "minimum-stability": "beta"
 }
