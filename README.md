@@ -4,13 +4,25 @@ TLDR; Boots up the integration testframework in less than 300ms when caches are 
 
 Video: http://cloud.h-o.nl/adf01f498e00
 
+## Installation
+
+```bash
+composer require reach-digital/magento2-test-framework
+```
+
+## Usage
+
+After the installation of the package there will be a folder `dev/tests/quick-integration` with the new integration
+test framework. Copy `phpunit.xml.dist` to `phpunit.xml` and make your changes to include your own namespaces.
+
 ## Goals
 - Have the startup time of the integration testframework below 300ms.
 - Have no feature regressions for small batches of test.
 - Show helpfull messages to speed up your tests
 
 ## Non-Goals
-- Be a complete replacement for the complete integration test suite.
+- Be a complete replacement for the complete integration test suite, only support the small suite that you test locally
+will be fine.
 
 ## Motivation
 
