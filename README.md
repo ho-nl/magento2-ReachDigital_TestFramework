@@ -7,7 +7,7 @@ Video: http://cloud.h-o.nl/adf01f498e00
 ## Installation
 
 ```bash
-composer require reach-digital/magento2-test-framework
+composer require-dev reach-digital/magento2-test-framework
 ```
 
 ## Usage
