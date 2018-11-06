@@ -7,7 +7,7 @@ Video: http://cloud.h-o.nl/adf01f498e00
 ## Installation
 
 ```bash
-composer require-dev reach-digital/magento2-test-framework
+composer require --dev reach-digital/magento2-test-framework
 ```
 
 ## Usage
@@ -29,7 +29,7 @@ will be fine.
 Magento 2's integration tests are notoriously slow in booting up, which makes practicing TDD a pain in the ass. Nobody
 wants to wait more than 10 seconds for tests to start..
 
-Speed matters, but Magento developer have grown accustomed that things are just slow
+Speed matters, but Magento developer have grown accustomed that things are just slow.
 
 > - 0 to 100ms:	Respond to user actions within this time window and users feel like the result is immediate. Any longer, and the connection between action and reaction is broken.
 > - 100 to 300ms: Users experience a slight perceptible delay.
