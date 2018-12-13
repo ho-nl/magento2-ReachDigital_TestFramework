@@ -63,7 +63,7 @@ Speed improvement; ~10-20s
 By disabling the following classes we get the biggest speed improvement.
 
 ```php
-<?php
+<?php declare(strict_types=1);
 \Magento\TestFramework\Workaround\Cleanup\TestCaseProperties::class;
 \Magento\TestFramework\Workaround\Cleanup\StaticProperties::class;
 ```
@@ -73,7 +73,7 @@ By disabling the following classes we get the biggest speed improvement.
 Speed improvement; ~50ms
 
 ```php
-<?php
+<?php declare(strict_types=1);
 //Rewrites Magento's AppIsolation class
 \ReachDigital\TestFramework\Annotation\AppIsolation::class;
 ```
@@ -91,10 +91,14 @@ Speed improvement; ~400ms
 
 By default Magento creates all sequence tables
 
-## Usability improvements
+## Quality of life improvements
 
 ### 1. Moved the generation folder back to the root
 
 Usually an IDE doesn't like it when duplicate classes exist, because of this reason the
 `dev/test/integration/tmp/sandbox-*` directory should be ignored. By moving the generated folder to the root of the
 project we get the benefit that the IDE can inspect those classes.
+
+### 2. Disable modules while running tests, copies `app/etc/config.php`
+
+Question asked here: https://magento.stackexchange.com/questions/221736/disable-module-in-integration-tests-how-is-the-sandbox-config-php-written
