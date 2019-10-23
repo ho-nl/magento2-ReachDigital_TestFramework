@@ -2,8 +2,6 @@
 
 TLDR; Boots up the integration testframework in less than 300ms when caches are primed.
 
-Video: http://images.h-o.nl/adf01f498e00
-
 ## Installation
 
 ```bash
