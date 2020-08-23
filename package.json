@@ -1,9 +1,9 @@
 {
-    "name": "@reach-digital/magento2-inventory-source-reservations",
+    "name": "@reach-digital/magento2-reach-digital-test-framework",
     "private": true,
     "repository": {
         "type": "git",
-        "url": "git@github.com:ho-nl/magento2-ReachDigital_InventoryOrderSourceReservations.git"
+        "url": "git@github.com:ho-nl/magento2-ReachDigital_TestFramework.git"
     },
     "author": "Paul Hachmang <paul@reachdigital.nl>",
     "devDependencies": {
