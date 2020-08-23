@@ -23,7 +23,11 @@ class Application extends \Magento\TestFramework\Application
         $this->_ensureDirExists($this->_configDir);
 
         $file = $this->_globalConfigDir . '/config.php';
-        $targetFile = $this->_configDir . str_replace($this->_globalConfigDir, '', $file);
+        if (file_exists(TESTS_ROOT_DIR . '/etc/config.php')) {
+            $file = TESTS_ROOT_DIR . '/etc/config.php';
+        }
+
+        $targetFile = $this->installDir . '/etc/config.php';
 
         $this->_ensureDirExists(dirname($targetFile));
         if ($file !== $targetFile) {

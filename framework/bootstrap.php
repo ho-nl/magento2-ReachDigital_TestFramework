@@ -12,6 +12,9 @@ $fixtureBaseDir = $integrationTestDir.'/testsuite';
 require_once __DIR__ . '/../../../../app/bootstrap.php';
 require_once __DIR__ . '/autoload.php';
 
+if (!defined('TESTS_ROOT_DIR')) {
+    define('TESTS_ROOT_DIR', dirname(__DIR__));
+}
 
 if (!defined('TESTS_TEMP_DIR')) {
     define('TESTS_TEMP_DIR', $integrationTestDir . '/tmp');
