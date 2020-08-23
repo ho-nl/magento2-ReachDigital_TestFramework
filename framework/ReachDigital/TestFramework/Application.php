@@ -7,7 +7,10 @@ declare(strict_types=1);
 
 namespace ReachDigital\TestFramework;
 
+use Magento\Framework\App\DeploymentConfig\Writer\PhpFormatter;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Component\ComponentRegistrar;
+use Magento\TestFramework\Isolation\DeploymentConfig;
 
 class Application extends \Magento\TestFramework\Application
 {
@@ -34,7 +37,26 @@ class Application extends \Magento\TestFramework\Application
             copy($file, $targetFile);
         }
 
+        $configData = include $file;
+        $configData['modules'] = array_merge($configData['modules'], $this->getTestModules());
+
+        file_put_contents($targetFile, (new PhpFormatter())->format($configData));
+
         parent::install($cleanup);
+    }
+
+    private function getTestModules()
+    {
+        $modules = (new ComponentRegistrar())->getPaths(ComponentRegistrar::MODULE);
+
+        $filteredModules = array_flip(
+            array_filter(array_keys($modules), function ($item) {
+                return strpos($item, 'TestModule') !== false;
+            })
+        );
+        return array_map(function () {
+            return 1;
+        }, $filteredModules);
     }
 
     /**

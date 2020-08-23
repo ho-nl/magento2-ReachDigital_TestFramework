@@ -1,6 +1,7 @@
 # ReachDigital Magento 2 Performance tuned integration tests
 
-TLDR; Boots up the integration test framework in less than 300ms when caches are primed.
+- Boots up the integration test framework in less than 300ms when caches are primed.
+- Adds the ability to automatically install TestModules.
 
 ## Installation
 
@@ -30,6 +31,10 @@ order to apply to correct configuration.
 # Running Quick integration tests via bin/magento
 php bin/magento dev:tests:run integration -c $(pwd)/dev/tests/quick-integration/phpunit.xml
 ```
+
+### TestModule
+
+Automatically installs test modules that are available in the following path: `vendor/*/*/TestModule*`
 
 ## Goals
 
