@@ -40,7 +40,8 @@ php bin/magento dev:tests:run integration -c $(pwd)/dev/tests/quick-integration/
 ### TestModule
 
 Automatically installs test modules that are available in the following path:
-`vendor/*/*/TestModule*`
+`vendor/*/*/TestModule*` so for example
+`vendor/reach-digital/magento2-order-source-reservations/TestModuleInventoryStateCache`.
 
 ## Goals
 
