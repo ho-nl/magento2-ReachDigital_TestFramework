@@ -1,0 +1,97 @@
+{
+    "name": "@reach-digital/magento2-reach-digital-test-framework",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:ho-nl/magento2-ReachDigital_TestFramework.git"
+    },
+    "author": "Paul Hachmang <paul@reachdigital.nl>",
+    "devDependencies": {
+        "@commitlint/cli": "^8.3.5",
+        "@commitlint/config-conventional": "^8.3.4",
+        "@semantic-release/git": "^9.0.0",
+        "husky": "^4.2.5",
+        "semantic-release": "^17.0.8",
+        "semantic-release-slack-bot": "^1.6.2"
+    },
+    "commitlint": {
+        "extends": [
+            "@commitlint/config-conventional"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+        }
+    },
+    "release": {
+        "plugins": [
+            "@semantic-release/commit-analyzer",
+            [
+                "@semantic-release/release-notes-generator",
+                {
+                    "preset": "conventionalcommits",
+                    "presetConfig": {
+                        "types": [
+                            {
+                                "type": "docs",
+                                "section": "Documentation"
+                            },
+                            {
+                                "type": "feat",
+                                "section": "Features"
+                            },
+                            {
+                                "type": "fix",
+                                "section": "Fixes"
+                            },
+                            {
+                                "type": "perf",
+                                "section": "Performance Improvements"
+                            },
+                            {
+                                "type": "build",
+                                "section": "Build"
+                            },
+                            {
+                                "type": "refactor",
+                                "section": "Refactor"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "@semantic-release/git",
+            "@semantic-release/github",
+            [
+                "semantic-release-slack-bot",
+                {
+                    "notifyOnSuccess": true,
+                    "notifyOnFail": true,
+                    "markdownReleaseNotes": true,
+                    "onSuccessTemplate": {
+                        "blocks": [
+                            {
+                                "type": "section",
+                                "text": {
+                                    "type": "mrkdwn",
+                                    "text": "*New release for $repo_url 🎉*\n$release_notes"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        ],
+        "branches": [
+            {
+                "name": "master"
+            },
+            {
+                "name": "canary",
+                "channel": "canary",
+                "prerelease": "canary"
+            }
+        ]
+    }
+}
