@@ -11,7 +11,7 @@ class DocBlock extends \Magento\TestFramework\Bootstrap\DocBlock
 
     protected function _getSubscribers(\Magento\TestFramework\Application $application)
     {
-        return [
+        $subscribers = [
             new \Magento\TestFramework\Workaround\Segfault(),
 //            new \Magento\TestFramework\Workaround\Cleanup\TestCaseProperties(),
 //            new \Magento\TestFramework\Workaround\Cleanup\StaticProperties(),
@@ -36,5 +36,11 @@ class DocBlock extends \Magento\TestFramework\Bootstrap\DocBlock
             new \Magento\TestFramework\Annotation\AdminConfigFixture(),
             new \Magento\TestFramework\Annotation\ConfigFixture(),
         ];
+
+        if (class_exists(\Magento\TestFramework\Workaround\Override\Fixture\Resolver\TestSetter::class)) {
+            $subscribers[] = new \Magento\TestFramework\Workaround\Override\Fixture\Resolver\TestSetter();
+        }
+
+        return $subscribers;
     }
 }
