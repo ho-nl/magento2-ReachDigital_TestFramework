@@ -56,6 +56,7 @@
         <!-- Connection parameters for MongoDB library tests -->
         <!--<const name="MONGODB_CONNECTION_STRING" value="mongodb://localhost:27017"/>-->
         <!--<const name="MONGODB_DATABASE_NAME" value="magento_integration_tests"/>-->
+        <const name="USE_OVERRIDE_CONFIG" value="enabled"/>
     </php>
     <!-- Test listeners -->
     <listeners>
