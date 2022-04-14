@@ -6,6 +6,7 @@
 namespace ReachDigital\TestFramework\Annotation;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Util\Test as TestUtil;
 
 /**
  * Rewrite of \Magento\TestFramework\Annotation\AppIsolation because that class will always reinitialize on each test
@@ -74,7 +75,7 @@ class AppIsolation
     private function isTestMagentoAppIsolationEnabled(TestCase $testCase)
     {
         /* Determine an isolation from doc comment */
-        $annotations = $testCase->getAnnotations();
+        $annotations = TestUtil::parseTestMethodAnnotations(get_class($testCase), $testCase->getName(false));
         $annotations = array_replace((array) $annotations['class'], (array) $annotations['method']);
 
         if (isset($annotations['magentoAppIsolation'])) {
