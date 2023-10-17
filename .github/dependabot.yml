@@ -1,0 +1,35 @@
+version: 2
+registries:
+  composer-repository-composer-amasty-com:
+    type: composer-repository
+    url: https://composer.amasty.com
+    username: c385f0bd71bdbea3bc3860661763bacc
+    password: "${{secrets.COMPOSER_REPOSITORY_COMPOSER_AMASTY_COM_PASSWORD}}"
+  composer-repository-packages-geissweb-de:
+    type: composer-repository
+    url: https://packages.geissweb.de
+    username: 2yN58EqMH3sCowsJgXni8fT7DtzF6HpQ
+    password: "${{secrets.COMPOSER_REPOSITORY_PACKAGES_GEISSWEB_DE_PASSWORD}}"
+  composer-repository-repo-magento-com:
+    type: composer-repository
+    url: https://repo.magento.com
+    username: 0be44dd5fe4ed278e7f09a756ed33444
+    password: "${{secrets.COMPOSER_REPOSITORY_REPO_MAGENTO_COM_PASSWORD}}"
+  composer-repository-repo-packagist-com:
+    type: composer-repository
+    url: https://repo.packagist.com
+    username: paales
+    password: "${{secrets.COMPOSER_REPOSITORY_REPO_PACKAGIST_COM_PASSWORD}}"
+
+updates:
+- package-ecosystem: composer
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 99
+  registries:
+  - composer-repository-composer-amasty-com
+  - composer-repository-packages-geissweb-de
+  - composer-repository-repo-magento-com
+  - composer-repository-repo-packagist-com
