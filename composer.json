@@ -37,5 +37,10 @@
             }
         ]
     },
-    "minimum-stability": "beta"
+    "minimum-stability": "beta",
+    "scripts": {
+        "post-install-cmd": [
+            "patch -N -p0 < ./patches/fix-db-access-breaking-integration-test.patch || true"
+        ]
+    }
 }
