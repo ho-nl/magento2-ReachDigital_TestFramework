@@ -80,8 +80,31 @@ Copy the contents of `dev/tests/quick-integration/phpunit.xml.dist` to `dev/test
    ```
 
 Install patches:
-This prevents a lot of issues when stating integration tests:
- - [patches/fix-db-access-breaking-integration-test.patch](https://github.com/ho-nl/project-paracord.eu/commit/b12d74f1323a11f392a9f89d69806d262e29cae7)
+
+Disabling the ```$this->createCliCommands();``` This prevents a lot of issues when stating integration tests:
+
+```php
+    /**
+     * Retrieve object manager.
+     *
+     * @return ObjectManagerInterface
+     * @throws \Magento\Setup\Exception
+     */
+    public function get()
+    {
+        if (null === $this->objectManager) {
+            $initParams = $this->serviceLocator->get(InitParamListener::BOOTSTRAP_PARAM);
+            $factory = $this->getObjectManagerFactory($initParams);
+            $this->objectManager = $factory->create($initParams);
+//            Disabled early CLI command initialisation, to prevent DB access from bin/magento setup:install, which breaks
+//            integration tests. This is because some classes being injected in CLI command constructors trigger DB access.
+//            if (PHP_SAPI == 'cli') {
+//                $this->createCliCommands();
+//            }
+        }
+        return $this->objectManager;
+    }
+```
 
 Not critical for integration tests, but helps find issues easier:
  - [magento-framework-object-manager-exception-handling.patch](https://github.com/ho-nl/project-paracord.eu/blob/rc/composer-patches/magento-framework-object-manager-exception-handling.patch)
@@ -111,7 +134,7 @@ Fatal error: Uncaught Magento\Framework\Exception\FileSystemException: The "app/
 Enable TESTS_PARALLEL_RUN in the phpunit.xml file.
 
 ```bash
-Foutmelding: Call to undefined method ReflectionMethod::getAttributes()
+Error: Call to undefined method ReflectionMethod::getAttributes()
 ```
 This error is caused by Magento 2.4.5 integration tests not being compatible with php 7.4. The easiest way to solve this is to run with php 8.1
 See: [Magento/TestFramework/Fixture/Parser/DbIsolation.php](https://github.com/magento/magento2/blob/2.4.5/dev/tests/integration/framework/Magento/TestFramework/Fixture/Parser/DbIsolation.php#L53)
@@ -119,8 +142,67 @@ See: [Magento/TestFramework/Fixture/Parser/DbIsolation.php](https://github.com/m
 ### Tips: 
 Data fixtures as php attributes are available since php8. Traditionally every Magento module makes data fixtures available 
 via `/dev/test/integration/testsuite/Magento/<module>/_files/<data-fixture>.php`. These can be used when writing your own 
-data-fixture, demonstrated here: [paid_banktransfer_order.php](https://github.com/ho-nl/project-vaessen-creative.com/blob/feature/integration-tests/app/code/ReachDigital/OrderProcessor/Test/Integration/_files/paid_banktransfer_order.php#L11)
+data-fixture, for instance:
 
-However, a cleaner way of adding data fixtures with attributes is demonstrated here:
-[PickerJobTest.php](https://github.com/ho-nl/project-paracord.eu/blob/0bf600d67a2375bcd1d703e9031e50ceba1286b3/app/code/ReachDigital/PickerTracker/Test/Integration/PickerJobTest.php#L131-L142)
+```php
+<?php
+declare(strict_types=1);
 
+/** @var \Magento\Quote\Model\Quote $quote */
+/** @var \Magento\Quote\Model\QuoteIdMask $quoteIdMask */
+
+require 'Magento/Checkout/_files/quote_with_check_payment.php';
+
+$quote->getPayment()->setMethod(\Magento\OfflinePayments\Model\Banktransfer::PAYMENT_METHOD_BANKTRANSFER_CODE);
+$quote->save();
+
+$cartManagement = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+    \Magento\Quote\Api\GuestCartManagementInterface::class
+);
+$orderId = $cartManagement->placeOrder($quoteIdMask->getMaskedId());
+
+$invoiceOrder = \Magento\TestFramework\Helper\Bootstrap::getObjectManager()->get(
+    \Magento\Sales\Api\InvoiceOrderInterface::class
+);
+$invoiceOrder->execute($orderId);
+```
+
+However, a cleaner way of adding data fixtures with attributes, for example:
+
+```php
+<?php
+declare(strict_types=1);
+
+use Magento\Catalog\Test\Fixture\Product as ProductFixture;
+use Magento\Checkout\Test\Fixture\PlaceOrder as PlaceOrderFixture;
+use Magento\Checkout\Test\Fixture\SetBillingAddress as SetBillingAddressFixture;
+use Magento\Checkout\Test\Fixture\SetDeliveryMethod as SetDeliveryMethodFixture;
+use Magento\Checkout\Test\Fixture\SetGuestEmail as SetGuestEmailFixture;
+use Magento\Checkout\Test\Fixture\SetPaymentMethod as SetPaymentMethodFixture;
+use Magento\Checkout\Test\Fixture\SetShippingAddress as SetShippingAddressFixture;
+use Magento\Quote\Test\Fixture\AddProductToCart as AddProductToCartFixture;
+use Magento\Quote\Test\Fixture\GuestCart as GuestCartFixture;
+use Magento\TestFramework\Fixture\DataFixture;
+
+class MyTest extends \PHPUnit\Framework\TestCase
+{
+    #[
+        DataFixture(ProductFixture::class, as: 'product'),
+        DataFixture(GuestCartFixture::class, as: 'cart'),
+        DataFixture(
+            AddProductToCartFixture::class,
+            ['cart_id' => '$cart.id$', 'product_id' => '$product.id$', 'qty' => 2]
+        ),
+        DataFixture(SetBillingAddressFixture::class, ['cart_id' => '$cart.id$']),
+        DataFixture(SetShippingAddressFixture::class, ['cart_id' => '$cart.id$']),
+        DataFixture(SetGuestEmailFixture::class, ['cart_id' => '$cart.id$']),
+        DataFixture(SetDeliveryMethodFixture::class, ['cart_id' => '$cart.id$']),
+        DataFixture(SetPaymentMethodFixture::class, ['cart_id' => '$cart.id$']),
+        DataFixture(PlaceOrderFixture::class, ['cart_id' => '$cart.id$'], 'order'),
+    ]
+    public function testMyTest()
+    {
+        // write a test using the prepared cart via PHP attributes  
+    }
+}
+```
