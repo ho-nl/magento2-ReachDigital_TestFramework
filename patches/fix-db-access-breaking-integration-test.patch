@@ -1,5 +1,5 @@
---- setup/src/Magento/Setup/Model/ObjectManagerProvider.php.orig	2023-10-24 10:29:14
-+++ setup/src/Magento/Setup/Model/ObjectManagerProvider.php	2023-10-24 10:30:40
+--- ./../../../setup/src/Magento/Setup/Model/ObjectManagerProvider.php	2023-10-24 10:29:14
++++ ./../../../setup/src/Magento/Setup/Model/ObjectManagerProvider.php	2023-10-24 10:30:40
 @@ -60,9 +60,11 @@
              $initParams = $this->serviceLocator->get(InitParamListener::BOOTSTRAP_PARAM);
              $factory = $this->getObjectManagerFactory($initParams);
