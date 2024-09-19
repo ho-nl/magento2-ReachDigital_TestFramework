@@ -17,6 +17,9 @@ After the installation of the package there will be a folder
 `phpunit.xml.dist` to `phpunit.xml` and make your changes to include your own
 namespaces.
 
+## Configuration
+See [Config](CONFIG.md) for configuration steps and common errors
+
 ## Test Execution
 
 To get the fastest result, execute the quick integration with plain `phpunit`
