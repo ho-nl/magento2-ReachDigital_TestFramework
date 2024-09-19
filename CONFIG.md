@@ -81,7 +81,7 @@ Copy the contents of `dev/tests/quick-integration/phpunit.xml.dist` to `dev/test
 
 Install patches:
 
-Disabling the ```$this->createCliCommands();``` This prevents a lot of issues when stating integration tests:
+Disabling the ```$this->createCliCommands();``` in ```setup/src/Magento/Setup/Model/ObjectManagerProvider.php``` prevents a lot of issues when stating integration tests:
 
 ```php
     /**
